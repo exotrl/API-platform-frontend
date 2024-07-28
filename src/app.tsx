@@ -24,9 +24,11 @@ export async function getInitialState(): Promise<InitialState> {
     if(res.data){
       state.loginUser = res.data;
     }
+    // 如果在获取用户信息过程中发生错误  就把页面重定向到登陆页面
   } catch (error) {
     history.push(loginPath);
   }
+  // 返回修改之后的状态
   return state;
 }
 

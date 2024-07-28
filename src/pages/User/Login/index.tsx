@@ -98,10 +98,11 @@ const Login: React.FC = () => {
       });
       if(res.data){
         const urlParams = new URL(window.location.href).searchParams;
+        // 设置一个定时器  100ms之后，导航到重定向的url  如果没有重定向url，就导航到根目录
         setTimeout(() => {
           history.push(urlParams.get('redirect') || '/');
         },100);
-        
+
          setInitialState({
           loginUser: res.data
         })
