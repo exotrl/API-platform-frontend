@@ -26,6 +26,123 @@ import CreateModal from "@/pages/Admin/InterfaceInfo/components/CreateModal";
 import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 
 
+/**
+ * @en-US Add node
+ * @zh-CN 添加节点
+ * @param fields
+ */
+const handleAdd = async (fields: API.InterfaceInfo) => {
+  const hide = message.loading('正在添加');
+  try {
+    await addInterfaceInfoUsingPost({
+      ...fields,
+    });
+    hide();
+    message.success('创建成功');
+    actionRef.current?.reload();
+    handleModalOpen(false);
+    return true;
+  } catch (error) {
+    hide();
+    message.error('创建失败'+error.message);
+    return false;
+  }
+};
+
+/**
+ * @en-US Update node
+ * @zh-CN 更新节点
+ *
+ * @param fields
+ */
+const handleUpdate = async (fields: API.InterfaceInfo) => {
+  const hide = message.loading('修改中');
+  try {
+    await updateInterfaceInfoUsingPost({
+      id:currentRow.id,
+      ...fields,
+    });
+    hide();
+    message.success('操作成功');
+    actionRef.current?.reload();
+    return true;
+  } catch (error) {
+    hide();
+    message.error('操作失败'+error.message);
+    return false;
+  }
+};
+
+/**
+ * 发布接口
+ *
+ * @param selectedRows
+ */
+const handleOnline = async (record: API.IdRequest) => {
+  const hide = message.loading('发布中');
+  if (!record) return true;
+  try {
+    await onlineInterfaceInfoUsingPost({
+      id: record.id,
+    });
+    hide();
+    message.success('操作成功');
+    actionRef.current?.reload();
+    return true;
+  } catch (error) {
+    hide();
+    message.error('操作失败.'+error.message);
+    return false;
+  }
+};
+
+/**
+ * 下线接口
+ *
+ * @param selectedRows
+ */
+const handleOffline = async (record: API.IdRequest) => {
+  const hide = message.loading('下线中');
+  if (!record) return true;
+  try {
+    await offlineInterfaceInfoUsingPost({
+      id: record.id,
+    });
+    hide();
+    message.success('操作成功');
+    actionRef.current?.reload();
+    return true;
+  } catch (error) {
+    hide();
+    message.error('操作失败.'+error.message);
+    return false;
+  }
+};
+
+
+/**
+ *  Delete node
+ * @zh-CN 删除节点
+ *
+ * @param selectedRows
+ */
+const handleRemove = async (record: API.InterfaceInfo) => {
+  const hide = message.loading('正在删除');
+  if (!record) return true;
+  try {
+    await deleteInterfaceInfoUsingPost({
+      id: record.id,
+    });
+    hide();
+    message.success('删除成功');
+    actionRef.current?.reload();
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败.'+error.message);
+    return false;
+  }
+};
 
 
 const TableList: React.FC = () => {
@@ -44,123 +161,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
   const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo[]>([]);
 
-  /**
-   * @en-US Add node
-   * @zh-CN 添加节点
-   * @param fields
-   */
-  const handleAdd = async (fields: API.InterfaceInfo) => {
-    const hide = message.loading('正在添加');
-    try {
-      await addInterfaceInfoUsingPost({
-        ...fields,
-      });
-      hide();
-      message.success('创建成功');
-      actionRef.current?.reload();
-      handleModalOpen(false);
-      return true;
-    } catch (error) {
-      hide();
-      message.error('创建失败'+error.message);
-      return false;
-    }
-  };
-
-  /**
-   * @en-US Update node
-   * @zh-CN 更新节点
-   *
-   * @param fields
-   */
-  const handleUpdate = async (fields: API.InterfaceInfo) => {
-    const hide = message.loading('修改中');
-    try {
-      await updateInterfaceInfoUsingPost({
-        id:currentRow.id,
-        ...fields,
-      });
-      hide();
-      message.success('操作成功');
-      actionRef.current?.reload();
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败'+error.message);
-      return false;
-    }
-  };
-
-  /**
-   * 发布接口
-   *
-   * @param selectedRows
-   */
-  const handleOnline = async (record: API.IdRequest) => {
-    const hide = message.loading('发布中');
-    if (!record) return true;
-    try {
-      await onlineInterfaceInfoUsingPost({
-        id: record.id,
-      });
-      hide();
-      message.success('操作成功');
-      actionRef.current?.reload();
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败.'+error.message);
-      return false;
-    }
-  };
-
-  /**
-   * 下线接口
-   *
-   * @param selectedRows
-   */
-  const handleOffline = async (record: API.IdRequest) => {
-    const hide = message.loading('下线中');
-    if (!record) return true;
-    try {
-      await offlineInterfaceInfoUsingPost({
-        id: record.id,
-      });
-      hide();
-      message.success('操作成功');
-      actionRef.current?.reload();
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败.'+error.message);
-      return false;
-    }
-  };
-
-
-  /**
-   *  Delete node
-   * @zh-CN 删除节点
-   *
-   * @param selectedRows
-   */
-  const handleRemove = async (record: API.InterfaceInfo) => {
-    const hide = message.loading('正在删除');
-    if (!record) return true;
-    try {
-      await deleteInterfaceInfoUsingPost({
-        id: record.id,
-      });
-      hide();
-      message.success('删除成功');
-      actionRef.current?.reload();
-      return true;
-    } catch (error) {
-      hide();
-      message.error('删除失败.'+error.message);
-      return false;
-    }
-  };
 
 
   /**
@@ -257,19 +257,21 @@ const TableList: React.FC = () => {
           修改
         </a>,
 
-        record.status === 0 ? <a
-          key="config"
+        record.status === 0 ? <Button
+          key="online"
+          danger
+          type= "text"
           onClick={() => {
             handleOnline(record);
           }}
         >
           发布
-        </a> : null,
+        </Button> : null,
 
         record.status === 1 ? <Button
           type= "text"
           danger
-          key="config"
+          key="offline"
           onClick={() => {
             handleOffline(record);
           }}
@@ -294,7 +296,11 @@ const TableList: React.FC = () => {
     <PageContainer>
       <ProTable<API.RuleListItem, API.PageParams>
         headerTitle={'查询表格'}
+        scroll={{ x: 'max-content' }}
         actionRef={actionRef}
+        style={{
+          width: '100%', // 表格宽度占满容器
+        }}
         rowKey="key"
         search={{
           labelWidth: 120,
